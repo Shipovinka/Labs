@@ -1,0 +1,12 @@
+2024-05-10 08:12:33 INFO  Application started successfully
+2024-05-10 08:12:35 DEBUG Loading configuration from /etc/app.conf
+2024-05-10 08:12:36 WARN  Deprecated setting 'old_mode' is used
+2024-05-10 08:12:37 ERROR Failed to connect to database: connection timeout
+2024-05-10 08:12:38 INFO  Retrying connection...
+2024-05-10 08:12:40 ERROR Invalid credentials for user 'admin'
+2024-05-10 08:12:41 DEBUG Attempting fallback authentication
+2024-05-10 08:12:42 INFO  Authentication successful via fallback
+2024-05-10 08:12:45 WARN  High memory usage detected (85%)
+2024-05-10 08:12:50 ERROR Disk write failed: No space left on device
+2024-05-10 08:12:52 INFO  Cleaning temporary files...
+2024-05-10 08:12:55 INFO  System recovered, continuing normal operation
