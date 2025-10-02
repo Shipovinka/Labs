@@ -22,31 +22,47 @@ FILENAME=system_report_$YEAR-$DAY-$MON.csv
 PARAM=$1
 if [ "$PARAM" = "START" ]; then
 	if [ -f "lab2_log.txt" ]; then 
-		count=$(< lab2_log.txt)
+		current_id=$(< lab2_log.txt)
+		if kill -0 "$current_id" 2>/dev/null; then
+			echo "lab2.sh is already started"
+		else
+			monitoring &
+			current_id=$!
+			echo $current_id > lab2_log.txt
+			echo $current_id
+		fi
 	else
-		touch lab2_log.txt
-		count=0
-	fi
-	if [ "$count" = "$!" ]; then
 		monitoring &
+		current_id=$!
+		echo $current_id > lab2_log.txt
+		echo $current_id
 	fi
-	echo $!
-	echo $! > lab2_log.txt
-	
+
 elif [ "$PARAM" = "STATUS" ]; then
-	count=$(ps aux | grep "lab2.sh" | grep -v grep | grep -v $$ | wc -l) #исключили процесс, который проверяет статус (grep с именем процесса) и считаем только фоновые процессы
-	if [ $count -ge 2 ]; then
-        echo "lab2.sh is running"
-    else
-        echo "lab2.sh is not running"
-    fi
+	if [ -f "lab2_log.txt" ]; then
+		current_id=$(< lab2_log.txt)
+		if kill -0 "$current_id" 2>/dev/null; then
+			echo "lab2.sh is running"
+		else
+			echo "lab2.sh is not running"
+		fi
+	else
+		echo "lab2.sh is not running"
+	fi
 	
 elif [ "$PARAM" = "STOP" ]; then
-	kill -9 $(ps aux | grep "lab2.sh" | grep -v grep | awk '{print $2}')
+	if [ -f "lab2_log.txt" ]; then
+		current_id=$(< lab2_log.txt)
+		if kill -0 "$current_id" 2>/dev/null; then
+			kill "$current_id"
+			rm -f lab2_log.txt
+		fi
+	else
+		echo "lab2.sh is not running"
+	fi
 else
 	exit 0
 fi
-
 
 #BASH – Лабораторная (2/3) 
 #Написать shell файл, который принимает на вход три параметра #START|STOP|STATUS. 
