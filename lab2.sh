@@ -11,36 +11,41 @@ function monitoring {
 		sleep 600
 	done
 }
-
+CUR_DIR=($pwd)
 YEAR=$(date | awk '{print $6}')
 MON=$(date +%m)
 DAY=$(date | awk '{print $3}')
 #echo $YEAR-$DAY-$MON
 FILENAME=system_report_$YEAR-$DAY-$MON.csv
 #echo $FILENAME
+FILE=lab2_log.txt
 
 PARAM=$1
+cd $HOME
 if [ "$PARAM" = "START" ]; then
+
 	if [ -f "lab2_log.txt" ]; then 
-		current_id=$(< lab2_log.txt)
+		current_id=$(< "$FILE")
 		if kill -0 "$current_id" 2>/dev/null; then
 			echo "lab2.sh is already started"
 		else
 			monitoring &
 			current_id=$!
-			echo $current_id > lab2_log.txt
+			echo $current_id > "$FILE"
 			echo $current_id
 		fi
 	else
 		monitoring &
 		current_id=$!
-		echo $current_id > lab2_log.txt
+		echo $current_id > "$FILE"
 		echo $current_id
+		
 	fi
 
 elif [ "$PARAM" = "STATUS" ]; then
-	if [ -f "lab2_log.txt" ]; then
-		current_id=$(< lab2_log.txt)
+	
+	if [ -f "$FILE" ]; then
+		current_id=$(< "$FILE")
 		if kill -0 "$current_id" 2>/dev/null; then
 			echo "lab2.sh is running"
 		else
@@ -52,17 +57,19 @@ elif [ "$PARAM" = "STATUS" ]; then
 	
 elif [ "$PARAM" = "STOP" ]; then
 	if [ -f "lab2_log.txt" ]; then
-		current_id=$(< lab2_log.txt)
+		current_id=$(< "$FILE")
 		if kill -0 "$current_id" 2>/dev/null; then
-			kill "$current_id"
-			rm -f lab2_log.txt
+			kill -9 "$current_id"
+			rm -f "$FILE"
+			echo "lab2.sh killed"
 		fi
 	else
-		echo "lab2.sh is not running"
+		echo "lab2.sh was not started, nothing to kill"
 	fi
 else
 	exit 0
 fi
+cd "$CUR_DIR"
 
 #BASH – Лабораторная (2/3) 
 #Написать shell файл, который принимает на вход три параметра #START|STOP|STATUS. 
